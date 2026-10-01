@@ -1,0 +1,2117 @@
+<!doctype html>
+<html lang="zh-Hant" data-visualize-standalone>
+<head>
+<script>(() => {
+  const key = 'camping-checklist-20261001-v1';
+  globalThis.campingStorage = {
+    read() {
+      const value = localStorage.getItem(key);
+      return value ? JSON.parse(value) : null;
+    },
+    write(state) {
+      localStorage.setItem(key, JSON.stringify(state));
+    }
+  };
+})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>露營打包清單</title>
+<style>:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --icon-size: 16px;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --corner-shape: round;
+  --radius: var(--border-radius-lg, 10px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Cpath d='M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z'/%3E%3C/svg%3E");
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html > body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: var(--visualize-paint-gutter, 0px);
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans) !important;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+:root:not([data-app-block-surface], [data-visualize-standalone]) > body {
+  padding: 12px;
+}
+
+.cursor-interaction {
+  cursor: var(--cursor-interaction, pointer);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: var(--cursor-interaction, pointer);
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive > .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align="right"]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align="center"]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: var(--corner-shape);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+.widget {
+  min-width: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  box-shadow: 0 0 0 0.5px var(--border-strong, var(--border));
+  color: var(--foreground);
+  background: var(--background);
+}
+
+#widget > :not(.card, .widget, .progress) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* The shared runtime owns data-tooltip; suppress AppBlock's pseudo-tooltip. */
+main [data-tooltip]::after {
+  content: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+hr {
+  width: 100%;
+  height: 1px;
+  margin-block: 6px;
+  border: 0;
+  background: var(--border);
+}
+
+.nav {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.progress {
+  display: flex;
+  height: 8px;
+  margin-block: calc((var(--line-height-normal, 1.5em) - 8px) / 2);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+}
+
+.progress-bar:only-child {
+  border-radius: var(--radius-full);
+}
+
+.progress-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border: 0;
+  background: var(--viz-series-1);
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls > .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls > .form-label > :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.nav-link,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn,
+.nav-link {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: var(--cursor-interaction, pointer);
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover,
+.nav-link:not(:disabled):not([aria-disabled="true"]):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.nav-pills .nav-link {
+  min-width: 0;
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.nav-justified .nav-link {
+  flex: 1 1 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.nav-pills .nav-link.active {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+/* Shared preview chrome; product styles stay inside each variant. */
+.viz-dotted-background {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--foreground) 14%, transparent) 0.8px,
+    transparent 0.8px
+  );
+  background-position: center;
+  background-size: 16px 16px;
+}
+
+.viz-carousel {
+  position: relative;
+  min-width: 0;
+}
+
+.viz-carousel:has(> .viz-carousel-controls) {
+  min-height: calc(60px + var(--viz-carousel-picker-height, 0px));
+  padding-bottom: 60px;
+}
+
+.viz-carousel > [data-variant][hidden] {
+  display: none !important;
+}
+
+.viz-carousel > [data-variant] {
+  isolation: isolate;
+}
+
+.viz-carousel-controls {
+  --viz-carousel-hover: light-dark(
+    color-mix(in srgb, var(--foreground) 5.4%, transparent),
+    color-mix(in srgb, var(--foreground) 7.8%, transparent)
+  );
+  position: absolute;
+  z-index: 2;
+  bottom: 8px;
+  left: 50%;
+  display: flex;
+  width: max-content;
+  /* Leave room for the host's design-controls launcher at the trailing edge. */
+  max-width: calc(100% - 96px);
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  /* Match the settings dropdown chrome independently of the content font size. */
+  font-size: 13px;
+  font-weight: var(--font-weight-normal);
+  line-height: 18px;
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+/* Keep authored mockup button styles out of the shared carousel chrome. */
+.viz-carousel-controls button,
+.viz-carousel-picker > summary {
+  display: flex !important;
+  height: auto !important;
+  min-height: 30px;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px;
+  padding: 0 6px !important;
+  -webkit-app-region: no-drag;
+  border: 0 !important;
+  border-radius: 14px !important;
+  color: inherit !important;
+  background: transparent !important;
+  font: inherit !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.viz-carousel-controls > button,
+.viz-carousel-picker > summary {
+  position: relative;
+  isolation: isolate;
+}
+
+.viz-carousel-controls > button {
+  --icon-size: 16px;
+  width: 30px !important;
+  padding: 0 !important;
+}
+
+.viz-carousel-picker > summary {
+  padding-inline: 12px !important;
+}
+
+.viz-carousel-controls .viz-carousel-caret {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  margin: 0;
+  color: inherit;
+  transform: rotate(180deg);
+}
+
+.viz-carousel-controls > button > svg,
+.viz-carousel-controls .viz-carousel-caret,
+.viz-carousel-count {
+  opacity: 0.5;
+}
+
+.viz-carousel-controls > button::before,
+.viz-carousel-picker > summary::before {
+  position: absolute;
+  z-index: -1;
+  inset: 3px;
+  border-radius: 12px;
+  content: "";
+  pointer-events: none;
+}
+
+.viz-carousel-controls > button:hover::before,
+.viz-carousel-picker > summary:hover::before {
+  background: var(--viz-carousel-hover);
+}
+
+.viz-carousel-controls > button,
+.viz-carousel-controls [data-lucide],
+.viz-carousel-controls .lucide {
+  flex-shrink: 0;
+}
+
+.viz-carousel-picker {
+  min-width: 0;
+}
+
+.viz-carousel-picker > summary {
+  min-width: 0;
+  list-style: none;
+}
+
+.viz-carousel-picker > summary::-webkit-details-marker {
+  display: none;
+}
+
+.viz-carousel-count {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.viz-carousel-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viz-carousel-options {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 4px);
+  left: 0;
+  display: flex;
+  max-height: 240px;
+  flex-direction: column;
+  gap: 2px;
+  overflow: auto;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--background);
+  box-shadow: 0 4px 12px light-dark(rgb(0 0 0 / 6%), rgb(0 0 0 / 25%));
+}
+
+.viz-carousel-options > button {
+  border-radius: max(0px, calc(var(--radius-lg) - 5px)) !important;
+  width: 100% !important;
+  min-height: 28px;
+  justify-content: flex-start !important;
+  padding: 4px 8px !important;
+  font-size: var(--font-size-small) !important;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.viz-carousel-options > [aria-current="true"],
+.viz-carousel-options > button:hover {
+  background: var(--viz-carousel-hover) !important;
+}
+
+.btn:disabled,
+.nav-link:disabled,
+.nav-link[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type="file"] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type="file"]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type="file"]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type="color"] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: var(--corner-shape);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type="checkbox"]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: "";
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type="radio"]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: "";
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+  [aria-pressed="true"],
+  [aria-selected="true"],
+  .is-selected
+) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed="true"], [aria-selected="true"], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible,
+.nav-link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.viz-carousel-controls :is(button, summary):focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px !important;
+}
+
+@media (pointer: coarse) {
+  .viz-carousel:has(> .viz-carousel-controls) {
+    min-height: calc(76px + var(--viz-carousel-picker-height, 0px));
+    padding-bottom: 76px;
+  }
+
+  .btn,
+  .nav-link,
+  .viz-carousel-controls button,
+  .viz-carousel-picker > summary,
+  .form-control,
+  .form-select {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Keep small-screen WebKit from zooming when a text field receives focus. */
+  .form-control,
+  .form-select {
+    font-size: max(16px, var(--font-size-normal));
+  }
+
+  .form-control[type="file"]::file-selector-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control-color[type="color"] {
+    width: 44px;
+    height: 44px;
+  }
+
+  .form-control:is(
+    [type="date"],
+    [type="datetime-local"],
+    [type="month"],
+    [type="time"],
+    [type="week"]
+  ) {
+    min-width: 0;
+    max-width: 100%;
+    padding-block: 8px;
+  }
+
+  .form-check {
+    min-height: 44px;
+    padding-inline: 15px;
+  }
+
+  .form-check-input {
+    position: relative;
+  }
+
+  .form-check-input::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: "";
+    transform: translate(-50%, -50%);
+  }
+
+  .form-check-label {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .form-range {
+    height: 44px;
+    touch-action: pan-y;
+  }
+
+  .form-range::-webkit-slider-runnable-track {
+    height: 44px;
+  }
+
+  .form-range::-moz-range-track {
+    height: 44px;
+  }
+
+  .form-range::-webkit-slider-thumb {
+    margin-top: 12px;
+  }
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget > svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: var(--icon-size) !important;
+  height: var(--icon-size) !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html>body{box-sizing:border-box;padding:20px;max-width:1000px;margin:auto}</style>
+</head>
+<body>
+
+
+<div id="camp-pack">
+  <style>
+    #camp-pack .pack-header {display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-right:90px;margin-bottom:12px}
+    #camp-pack .pack-header h2 {margin:0}
+    #camp-pack .pack-status {margin:12px 0 8px}
+    #camp-pack .pack-columns {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 28px;margin-top:18px}
+    #camp-pack .pack-group h3 {display:flex;align-items:center;gap:8px;margin:0 0 10px}
+    #camp-pack .pack-items {display:grid;gap:8px}
+    #camp-pack .pack-item {display:grid;gap:6px;padding-bottom:10px}
+    #camp-pack .pack-item-controls {display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    #camp-pack .pack-owner-field {flex:1 1 130px;min-width:0}
+    #camp-pack .pack-item-note {overflow-wrap:anywhere}
+    #camp-pack .pack-meta {color:var(--muted-foreground);margin-left:6px}
+    #camp-pack .pack-added {color:var(--orange);margin-left:6px}
+    #camp-pack label:has(input:checked) .pack-name {text-decoration:line-through;color:var(--muted-foreground)}
+    #camp-pack .pack-legend {margin-top:14px}
+    #camp-pack .rental-details {margin-bottom:16px}
+    #camp-pack .rental-details summary {padding:8px 0}
+    @media(max-width:540px){#camp-pack .pack-columns {grid-template-columns:1fr}}
+  </style>
+  <div class="pack-header"><i data-lucide="tent" aria-hidden="true"></i><h2>露營打包清單</h2><button class="btn btn-primary" id="pack-add-toggle" type="button" aria-expanded="false" aria-controls="pack-add-form">＋ 新增項目</button></div>
+  <form id="pack-add-form" class="card" hidden>
+    <h3 id="pack-form-title">新增項目</h3>
+    <div class="viz-controls">
+      <label class="form-label" for="pack-add-category">分類<select id="pack-add-category" class="form-select"><option value="pack-own">自備裝備</option><option value="pack-shop">採買食材</option><option value="pack-personal">個人用品</option><option value="pack-rent">租借確認</option></select></label>
+      <label class="form-label" for="pack-add-group">分組<select id="pack-add-group" class="form-select"></select></label>
+    </div>
+    <div class="viz-controls">
+      <label class="form-label" for="pack-add-name">用品名稱<input id="pack-add-name" class="form-control" type="text" required maxlength="120" placeholder="例如：折疊水桶"></label>
+      <label class="form-label" for="pack-add-owner">負責人<select id="pack-add-owner" class="form-select"></select></label>
+    </div>
+    <label class="form-label" id="pack-new-person-field" for="pack-new-person" hidden>新增人員姓名<input id="pack-new-person" class="form-control" type="text" maxlength="40" placeholder="輸入姓名"></label>
+    <label class="form-label" for="pack-add-note">備註<input id="pack-add-note" class="form-control" type="text" maxlength="200" placeholder="例如：向老闆租借、數量待確認"></label>
+    <div class="viz-row"><button class="btn btn-primary" id="pack-submit" type="submit">加入清單</button><button class="btn" id="pack-add-cancel" type="button">取消</button></div>
+  </form>
+  <div class="viz-row"><div id="pack-add-message" class="text-small" aria-live="polite"></div><button class="btn btn-ghost" id="pack-undo" type="button" hidden>撤銷上次刪除</button></div>
+  <div class="nav nav-pills" role="tablist" aria-label="用品分類">
+    <button class="nav-link" id="pack-own-tab" role="tab" aria-controls="pack-own" aria-selected="false" type="button">自備裝備</button>
+    <button class="nav-link" id="pack-shop-tab" role="tab" aria-controls="pack-shop" aria-selected="false" type="button">採買食材</button>
+    <button class="nav-link" id="pack-personal-tab" role="tab" aria-controls="pack-personal" aria-selected="false" type="button">個人用品</button>
+    <button class="nav-link active" id="pack-rent-tab" role="tab" aria-controls="pack-rent" aria-selected="true" type="button">租借確認</button>
+  </div>
+  <div class="pack-status text-small" aria-live="polite">本區已備妥 <span id="pack-count" class="tabular-nums">0 / 0</span></div>
+  <div class="progress" role="progressbar" aria-label="本區準備進度" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar" style="width:0%"></div></div>
+  <div id="pack-own" role="tabpanel" aria-labelledby="pack-own-tab" hidden><div class="pack-columns"></div></div>
+  <div id="pack-shop" role="tabpanel" aria-labelledby="pack-shop-tab" hidden><div class="pack-columns"></div></div>
+  <div id="pack-personal" role="tabpanel" aria-labelledby="pack-personal-tab" hidden><div class="pack-columns"></div></div>
+  <div id="pack-rent" role="tabpanel" aria-labelledby="pack-rent-tab">
+    <div class="pack-columns"></div>
+    <hr>
+    <details class="rental-details"><summary class="cursor-interaction">原清單報價：公館森林 $3,520 ＋ 老闆床墊租金、木炭費用待確認</summary>
+      <div class="table-responsive"><table class="table table-sm"><thead><tr><th>公館森林</th><th class="text-end">數量</th><th class="text-end">小計</th></tr></thead><tbody>
+      <tr><td>4人小鹿帳（SN）</td><td class="text-end">2</td><td class="text-end">$1,600</td></tr>
+      <tr><td>四角天幕</td><td class="text-end">2</td><td class="text-end">$600</td></tr>
+      <tr><td>大雙燈</td><td class="text-end">1</td><td class="text-end">$200</td></tr>
+      <tr><td>高架焚火台</td><td class="text-end">1</td><td class="text-end">$350</td></tr>
+      <tr><td>大桌</td><td class="text-end">1</td><td class="text-end">$150</td></tr>
+      <tr><td>大露營椅</td><td class="text-end">4</td><td class="text-end">$400</td></tr>
+      <tr><td>蜘蛛爐</td><td class="text-end">1</td><td class="text-end">$100</td></tr>
+      <tr><td>12米延長線</td><td class="text-end">2</td><td class="text-end">$120</td></tr>
+      </tbody><tfoot><tr><th>合計</th><td></td><th class="text-end">$3,520</th></tr></tfoot></table></div>
+      <div class="table-responsive"><table class="table table-sm"><thead><tr><th>老闆處</th><th>方式</th><th>數量／費用</th></tr></thead><tbody>
+      <tr><td>雙人充氣床墊</td><td>租借</td><td>待確認</td></tr>
+      <tr><td>木炭</td><td>購買</td><td>待確認</td></tr>
+      </tbody></table></div>
+    </details>
+  </div>
+  <div class="pack-legend text-small text-muted">★ 建議補充　｜　勾選＝已備妥</div>
+  <div id="pack-save-status" class="text-small text-muted" aria-live="polite"></div>
+  <script>
+    (() => {
+      const root=document.getElementById('camp-pack');
+      const data={
+        'pack-own':[
+          ['睡覺與照明','bed-double',[
+            ['枕頭、棉被／睡袋','黃＋倫'],['充床墊用行動電源','倫'],['大燈＋掛勾','倫'],['燈泡串','倫'],['充氣幫浦與相容接頭','確認床墊是否附',true],['頭燈／手電筒、備用電池','',true]]],
+          ['料理與餐具','cooking-pot',[
+            ['餐具、杯子','黃＋倫'],['沙拉碗','黃＋倫'],['餐具瀝乾架','倫'],['烤吐司鐵盤','倫'],['瓦斯爐','黃'],['湯鍋＋大湯匙','黃'],['平底鍋＋鏟子＋夾子','黃'],['砧板','倫'],['刀子、湯勺、剪刀等','待分配'],['打火機、隔熱手套','',true]]],
+          ['清潔與保冷','droplets',[
+            ['廚房紙巾＋衛生紙','黃'],['垃圾袋','黃'],['洗碗精、菜瓜布','黃'],['保冷袋','待分配'],['抹布、洗碗盆','',true],['保冷劑、食材分裝盒／夾鏈袋','',true]]],
+          ['休閒與茶飲','coffee',[
+            ['喇叭 × 2','黃＋倫'],['抹茶組','黃'],['露營茶壺','倫'],['桌遊','待分配'],['羽毛球組','倫'],['撲克牌','黃']]]
+        ],
+        'pack-shop':[
+          ['晚餐與烤肉','utensils',[
+            ['晚餐食材'],['烤肉食材'],['櫛瓜'],['鹽巴、黑胡椒等調味料'],['奶油']]],
+          ['早餐與飲品','coffee',[
+            ['吐司'],['蛋'],['起司'],['培根'],['飲用水'],['飲料、啤酒'],['咖啡濾掛＋茶包','黃']]],
+          ['生火與烤肉耗材','flame',[
+            ['木材','先問小豆子'],['火種／原列火焰粉'],['木炭','向老闆購買'],['瓦斯罐'],['蜘蛛爐用高山瓦斯','倫'],['噴槍'],['烤網'],['免洗盤子＋竹籤'],['冰塊']]],
+          ['點心','popcorn',[
+            ['棉花糖'],['爆米花']]]
+        ],
+        'pack-personal':[
+          ['衣物與雨備','shirt',[
+            ['換洗衣物、內衣褲','每人',true],['備用襪子','每人',true],['保暖外套','每人',true],['好走的鞋、拖鞋','每人',true],['雨衣／雨傘','每人',true]]],
+          ['盥洗與保養','bath',[
+            ['牙膏、牙刷','每人'],['沐浴乳、洗髮乳、洗面乳','每人'],['毛巾、浴巾','每人'],['保養品、卸妝用品','每人'],['濕衣物防水袋','每人',true]]],
+          ['防蚊與備用','shield-check',[
+            ['防蚊液＋止癢用品','黃'],['帽子、防曬乳','每人',true],['個人常備藥','每人',true],['OK繃、消毒用品、紗布、膠帶','待分配',true]]],
+          ['出門隨身','backpack',[
+            ['手機、充電線、行動電源','每人',true],['錢包、證件','每人',true],['營地訂位資料','訂位人',true]]]
+        ],
+        'pack-rent':[
+          ['公館森林 · 租借','tent',[
+            ['4人小鹿帳 × 2'],['四角天幕 × 2'],['大雙燈 × 1'],['高架焚火台 × 1'],['大桌 × 1'],['大露營椅 × 4'],['蜘蛛爐 × 1'],['12米延長線 × 2']]],
+          ['老闆 · 租床墊、買木炭','bed-double',[
+            ['雙人充氣床墊','租借；數量、租金待確認'],['木炭','購買；用量、價格待確認'],['確認床墊是否附幫浦與接頭'],['確認取件、歸還時間']]],
+          ['配件與營地','wrench',[
+            ['營柱、營釘、營繩、營槌','公館森林確認'],['帳底防水布','公館森林確認'],['每人都有睡墊與寢具'],['每人都有座位（目前租4張椅子）'],['營地供電、延長線長度'],['確認營地生火規定'],['確認爐具與瓦斯罐相容'],['公館森林取件、歸還時間']]]
+        ]
+      };
+      // MODEL START
+      function createStore(source,saved){
+        const people=['待分配','黃','倫','黃＋倫','每人','訂位人'];
+        let sequence=0;
+        const items=[];
+        Object.entries(source).forEach(([panel,groups])=>groups.forEach((group,index)=>group[2].forEach(([name,owner='',added=false])=>{
+          const isPerson=people.includes(owner);
+          items.push({id:'item-'+sequence++,panel,group:index,name,owner:isPerson?owner:'待分配',note:isPerson?'':owner,added,done:false});
+        })));
+        const state={people,items,sequence};
+        if(saved&&saved.version===1&&Array.isArray(saved.items)&&Array.isArray(saved.people)){
+          const ids=new Set();
+          state.people=[...new Set([...people,...saved.people.filter(p=>typeof p==='string'&&p.trim()&&p.length<=40&&p!=='__new__')])];
+          state.items=saved.items.filter(i=>i&&typeof i.id==='string'&&!ids.has(i.id)&&ids.add(i.id)&&source[i.panel]&&Number.isInteger(i.group)&&source[i.panel][i.group]&&typeof i.name==='string'&&i.name.trim()).map(i=>({...i,name:i.name.slice(0,120),owner:state.people.includes(i.owner)?i.owner:'待分配',note:typeof i.note==='string'?i.note.slice(0,200):'',done:!!i.done,added:!!i.added}));
+          state.sequence=Math.max(sequence,Number.isSafeInteger(saved.sequence)?saved.sequence:0);
+        }
+        return {
+          state,
+          snapshot(){return {...state,version:1};},
+          add(item){let id;do{id='item-'+state.sequence++;}while(state.items.some(i=>i.id===id));const record={...item,id,done:false,added:false};state.items.push(record);return record;},
+          edit(id,changes){const item=state.items.find(i=>i.id===id);if(!item)return null;Object.assign(item,changes);return item;},
+          remove(id){const index=state.items.findIndex(i=>i.id===id);if(index<0)return null;return {index,item:state.items.splice(index,1)[0]};},
+          restore(removed){if(removed&&!state.items.some(i=>i.id===removed.item.id))state.items.splice(Math.min(removed.index,state.items.length),0,removed.item);}
+        };
+      }
+      // MODEL END
+      let initial=null;
+      try{initial=globalThis.campingStorage?.read();}catch{}
+      const store=createStore(data,initial);
+      const form=root.querySelector('#pack-add-form');
+      const category=root.querySelector('#pack-add-category');
+      const groupSelect=root.querySelector('#pack-add-group');
+      const nameInput=root.querySelector('#pack-add-name');
+      const ownerInput=root.querySelector('#pack-add-owner');
+      const noteInput=root.querySelector('#pack-add-note');
+      const newPerson=root.querySelector('#pack-new-person');
+      const toggle=root.querySelector('#pack-add-toggle');
+      const message=root.querySelector('#pack-add-message');
+      const undo=root.querySelector('#pack-undo');
+      let editing=null,lastDeleted=null;
+      function save(){
+        if(!globalThis.campingStorage)return;
+        try{globalThis.campingStorage.write(store.snapshot());root.querySelector('#pack-save-status').textContent='已儲存在此瀏覽器';}
+        catch{root.querySelector('#pack-save-status').textContent='此瀏覽器無法儲存，關閉頁面前請保留清單內容';}
+      }
+      function ownerOptions(select,value,allowNew=true){
+        select.replaceChildren();
+        store.state.people.forEach(person=>{const option=document.createElement('option');option.value=person;option.textContent=person;select.append(option);});
+        if(allowNew){const option=document.createElement('option');option.value='__new__';option.textContent='＋ 新增人員';select.append(option);}
+        select.value=value||'待分配';
+      }
+      function syncGroups(){
+        groupSelect.replaceChildren();
+        data[category.value].forEach(([name],i)=>{const option=document.createElement('option');option.value=i;option.textContent=name;groupSelect.append(option);});
+      }
+      function syncNewPerson(){
+        const adding=ownerInput.value==='__new__';
+        root.querySelector('#pack-new-person-field').hidden=!adding;
+        newPerson.required=adding;
+        if(adding)newPerson.focus();
+      }
+      function openForm(item){
+        editing=item?.id||null;
+        form.reset();nameInput.setCustomValidity('');newPerson.setCustomValidity('');
+        category.value=item?.panel||root.querySelector('[role="tab"][aria-selected="true"]').getAttribute('aria-controls');
+        syncGroups();groupSelect.value=item?.group??0;
+        ownerOptions(ownerInput,item?.owner||'待分配');syncNewPerson();
+        nameInput.value=item?.name||'';noteInput.value=item?.note||'';
+        root.querySelector('#pack-form-title').textContent=item?'編輯項目':'新增項目';
+        root.querySelector('#pack-submit').textContent=item?'儲存修改':'加入清單';
+        form.hidden=false;toggle.setAttribute('aria-expanded','true');nameInput.focus();
+        form.scrollIntoView({block:'nearest'});
+      }
+      function closeForm(){form.hidden=true;editing=null;toggle.setAttribute('aria-expanded','false');toggle.focus();}
+      function makeItem(record){
+        const row=document.createElement('div');row.className='pack-item';
+        const label=document.createElement('label');label.className='form-check';
+        const input=document.createElement('input');input.type='checkbox';input.className='form-check-input';input.id=record.id;input.checked=record.done;
+        input.addEventListener('change',()=>{record.done=input.checked;update();save();});
+        const text=document.createElement('span');text.className='form-check-label';
+        const name=document.createElement('span');name.className='pack-name';name.textContent=record.name;text.append(name);
+        if(record.added){const star=document.createElement('span');star.className='pack-added';star.textContent='★';star.setAttribute('aria-label','建議補充');text.append(star);}
+        label.append(input,text);row.append(label);
+        const controls=document.createElement('div');controls.className='pack-item-controls';
+        const owner=document.createElement('select');owner.className='form-select';owner.setAttribute('aria-label',record.name+'的負責人');ownerOptions(owner,record.owner);
+        owner.addEventListener('change',()=>{
+          if(owner.value==='__new__'){owner.value=record.owner;openForm(record);ownerInput.value='__new__';syncNewPerson();return;}
+          record.owner=owner.value;save();
+        });
+        const edit=document.createElement('button');edit.type='button';edit.className='btn btn-ghost';edit.textContent='編輯';edit.setAttribute('aria-label','編輯 '+record.name);edit.addEventListener('click',()=>openForm(record));
+        const del=document.createElement('button');del.type='button';del.className='btn btn-ghost';del.textContent='刪除';del.setAttribute('aria-label','刪除 '+record.name);
+        del.addEventListener('click',()=>{
+          lastDeleted=store.remove(record.id);if(editing===record.id)closeForm();renderItems();save();
+          message.textContent='已刪除：'+record.name;undo.hidden=false;undo.focus();
+        });
+        const ownerField=document.createElement('div');ownerField.className='pack-owner-field';ownerField.append(owner);
+        controls.append(ownerField,edit,del);row.append(controls);
+        if(record.note){const note=document.createElement('div');note.className='pack-item-note text-small text-muted';note.textContent=record.note;row.append(note);}
+        return row;
+      }
+      Object.entries(data).forEach(([panelId,groups])=>{
+        const target=root.querySelector('#'+panelId+' .pack-columns');
+        groups.forEach(([title,icon],groupIndex)=>{
+          const section=document.createElement('section');section.className='pack-group';section.dataset.group=groupIndex;
+          const heading=document.createElement('h3');const mark=document.createElement('i');mark.dataset.lucide=icon;mark.setAttribute('aria-hidden','true');heading.append(mark,document.createTextNode(title));
+          const list=document.createElement('div');list.className='pack-items';section.append(heading,list);target.append(section);
+        });
+      });
+      function renderItems(){
+        root.querySelectorAll('.pack-items').forEach(list=>list.replaceChildren());
+        store.state.items.forEach(item=>root.querySelector('#'+item.panel+' [data-group="'+item.group+'"] .pack-items').append(makeItem(item)));
+        update();
+      }
+      function update(){
+        const panel=root.querySelector('[role="tab"][aria-selected="true"]').getAttribute('aria-controls');
+        const items=store.state.items.filter(i=>i.panel===panel);const done=items.filter(i=>i.done).length;
+        const percent=items.length?Math.round(done/items.length*100):0;
+        root.querySelector('#pack-count').textContent=done+' / '+items.length;
+        root.querySelector('[role="progressbar"]').setAttribute('aria-valuenow',percent);root.querySelector('.progress-bar').style.width=percent+'%';
+      }
+      toggle.addEventListener('click',()=>openForm(null));
+      root.querySelector('#pack-add-cancel').addEventListener('click',closeForm);
+      category.addEventListener('change',syncGroups);ownerInput.addEventListener('change',syncNewPerson);
+      nameInput.addEventListener('input',()=>nameInput.setCustomValidity(''));
+      newPerson.addEventListener('input',()=>newPerson.setCustomValidity(''));
+      form.addEventListener('submit',event=>{
+        event.preventDefault();
+        const name=nameInput.value.trim();if(!name){nameInput.setCustomValidity('請輸入用品名稱');nameInput.reportValidity();return;}
+        let owner=ownerInput.value;
+        if(owner==='__new__'){
+          owner=newPerson.value.trim();
+          if(!owner||owner==='__new__'){newPerson.setCustomValidity('請輸入人員姓名');newPerson.reportValidity();return;}
+          if(!store.state.people.includes(owner))store.state.people.push(owner);
+        }
+        const changes={panel:category.value,group:Number(groupSelect.value),name,owner,note:noteInput.value.trim()};
+        const wasEditing=!!editing;
+        if(wasEditing)store.edit(editing,changes);else store.add(changes);
+        renderItems();save();root.querySelector('[role="tab"][aria-controls="'+changes.panel+'"]').click();
+        message.textContent=(wasEditing?'已更新：':'已新增：')+name;
+        closeForm();update();
+      });
+      undo.addEventListener('click',()=>{
+        if(!lastDeleted)return;const item=lastDeleted.item;store.restore(lastDeleted);lastDeleted=null;renderItems();save();undo.hidden=true;
+        root.querySelector('[role="tab"][aria-controls="'+item.panel+'"]').click();message.textContent='已還原：'+item.name;toggle.focus();update();
+      });
+      const observer=new MutationObserver(update);observer.observe(root.querySelector('[role="tablist"]'),{subtree:true,attributes:true,attributeFilter:['aria-selected']});
+      syncGroups();ownerOptions(ownerInput,'待分配');renderItems();
+      if(initial)root.querySelector('#pack-save-status').textContent='已載入此瀏覽器儲存的清單';
+      if(typeof lucide!=='undefined')lucide.createIcons({attrs:{width:16,height:16}});
+    })();
+  </script>
+</div>
+
+
+
+<script>
+(() => {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set(["top", "right", "bottom", "left"]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+  let lastPointerWasTouch = false;
+  let pinnedByTouch = false;
+
+  const getTrigger = (event) => {
+    for (const target of event.composedPath()) {
+      if (target?.nodeType === Node.ELEMENT_NODE) {
+        const trigger = target.closest("[data-tooltip]");
+        if (trigger) return trigger;
+      }
+    }
+    return null;
+  };
+  const containsTarget = (trigger, target) =>
+    target?.nodeType != null && trigger.contains(target);
+  const getContent = (trigger) =>
+    trigger.getAttribute("data-tooltip")?.trim() ?? "";
+  const getPlacement = (trigger) => {
+    const placement = trigger.getAttribute("data-tooltip-placement");
+    return tooltipPlacements.has(placement) ? placement : "top";
+  };
+  const getTooltip = () => {
+    if (tooltip == null) {
+      tooltip = document.createElement("div");
+      tooltip.id = tooltipId;
+      tooltip.className = "tooltip";
+      tooltip.setAttribute("role", "tooltip");
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) => {
+    const ids = new Set(
+      (trigger.getAttribute("aria-describedby") ?? "")
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute("aria-describedby");
+    } else {
+      trigger.setAttribute("aria-describedby", [...ids].join(" "));
+    }
+  };
+  const clearOpenTimeout = () => {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) => {
+    clearOpenTimeout();
+    pinnedByTouch = false;
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) => {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              "--tooltip-available-width",
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              "--tooltip-available-height",
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: "fixed",
+    })
+      .then(({ x, y }) => {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = "visible";
+      })
+      .catch(() => {
+        if (activeTrigger === trigger && request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) => {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = "hidden";
+    floating.style.transform = "translate(0, 0)";
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () => {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) => {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() < skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() => {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) => {
+    if (event.pointerType === "touch") {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handlePointer = (event) => {
+    lastPointerWasTouch =
+      event.type === "pointerdown" && event.pointerType === "touch";
+  };
+  const handleTouchClick = (event) => {
+    const isTouch = event.pointerType === "touch" || lastPointerWasTouch;
+    lastPointerWasTouch = false;
+    if (!isTouch || event.detail === 0) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (
+      trigger == null ||
+      !trigger.isConnected ||
+      getContent(trigger).length === 0 ||
+      (pinnedByTouch && activeTrigger === trigger)
+    ) {
+      if (pinnedByTouch) {
+        closeTooltip();
+      }
+      return;
+    }
+    openTooltip(trigger);
+    pinnedByTouch = activeTrigger === trigger;
+    window.setTimeout(() => {
+      if (activeTrigger === trigger && !trigger.isConnected) {
+        closeTooltip(false);
+      }
+    }, 0);
+  };
+  const handleLeave = (event) => {
+    if (pinnedByTouch) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) => {
+    const trigger = getTrigger(event);
+    if (trigger?.matches(":focus-visible")) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) => {
+    lastPointerWasTouch = false;
+    const trigger = getTrigger(event);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handlers = {
+    pointerover: handlePointerOpen,
+    pointerdown: handlePointer,
+    pointercancel: handlePointer,
+    click: handleTouchClick,
+    pointerout: handleLeave,
+    focusin: handleFocusIn,
+    focusout: handleLeave,
+    keydown: handleKeyDown,
+    contextmenu: handleContextMenu,
+  };
+  const roots = new Map();
+  const handledEvents = new WeakSet();
+  const handleEvent = (event) => {
+    if (handledEvents.has(event)) return;
+    handledEvents.add(event);
+    handlers[event.type](event);
+  };
+  const discoverRoots = (node) => {
+    if (node.shadowRoot) listen(node.shadowRoot);
+    for (const element of node.querySelectorAll("*")) {
+      if (element.shadowRoot) listen(element.shadowRoot);
+    }
+  };
+  const listen = (root) => {
+    if (roots.has(root)) return;
+    for (const type of Object.keys(handlers)) root.addEventListener(type, handleEvent);
+    const observer = new window.MutationObserver((records) => {
+      for (const { addedNodes } of records) {
+        for (const node of addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE) discoverRoots(node);
+        }
+      }
+      for (const [root, cleanup] of roots) {
+        if (root.host && !root.host.isConnected) {
+          cleanup();
+          roots.delete(root);
+        }
+      }
+      if (activeTrigger && !activeTrigger.isConnected) closeTooltip(false);
+    });
+    observer.observe(root, { childList: true, subtree: true });
+    roots.set(root, () => {
+      observer.disconnect();
+      for (const type of Object.keys(handlers)) root.removeEventListener(type, handleEvent);
+    });
+    discoverRoots(root);
+  };
+  const destroy = () => {
+    closeTooltip(false);
+    lastPointerWasTouch = false;
+    for (const cleanup of roots.values()) cleanup();
+    roots.clear();
+    tooltip = null;
+  };
+
+  // Events between children of one shadow root never reach the document.
+  listen(document);
+  window.addEventListener("pagehide", destroy, { once: true });
+})();
+</script>
+<script id="codex-visualization-tabs">
+(() => {
+  const selector = '.nav[role="tablist"] [role="tab"]';
+  const disabled = ':disabled,[aria-disabled="true"]';
+  const selectTab = (selected) => {
+    const panelId = selected.getAttribute("aria-controls");
+    for (const tab of selected.closest('[role="tablist"]').querySelectorAll('[role="tab"]')) {
+      const active = tab === selected;
+      tab.classList.toggle("active", active);
+      tab.setAttribute("aria-selected", String(active));
+      const id = tab.getAttribute("aria-controls");
+      const panel = id && document.getElementById(id);
+      if (panel != null) {
+        panel.hidden = id !== panelId;
+        if (!panel.hidden && selected.id) {
+          panel.setAttribute("aria-labelledby", selected.id);
+        }
+      }
+    }
+  };
+  const interact = (event) => {
+    const tab = event.target?.closest?.(selector);
+    if (event.defaultPrevented || tab == null || tab.matches(disabled)) {
+      return;
+    }
+    if (event.type === "click") {
+      selectTab(tab);
+      return;
+    }
+    const tabs = Array.from(
+      tab.closest('[role="tablist"]').querySelectorAll('[role="tab"]'),
+    ).filter((candidate) => !candidate.matches(disabled));
+    const current = tabs.indexOf(tab);
+    let next;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      next = (current + 1) % tabs.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      next = (current + tabs.length - 1) % tabs.length;
+    } else if (event.key === "Home") {
+      next = 0;
+    } else if (event.key === "End") {
+      next = tabs.length - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    tabs[next].focus();
+    selectTab(tabs[next]);
+  };
+
+  for (const list of document.querySelectorAll('.nav[role="tablist"]')) {
+    const selected =
+      list.querySelector('[role="tab"][aria-selected="true"]') ??
+      list.querySelector('[role="tab"].active') ??
+      list.querySelector('[role="tab"]');
+    if (selected != null) {
+      selectTab(selected);
+    }
+  }
+  document.addEventListener("click", interact);
+  document.addEventListener("keydown", interact);
+  window.addEventListener("pagehide", () => {
+    document.removeEventListener("click", interact);
+    document.removeEventListener("keydown", interact);
+  }, { once: true });
+})();
+</script>
+<script id="codex-visualization-carousel">
+  (() => {
+    for (const root of document.querySelectorAll(".viz-carousel")) {
+      const panels = Array.from(
+        root.querySelectorAll(":scope > [data-variant]"),
+      );
+      if (panels.length === 0) {
+        continue;
+      }
+      root.setAttribute("role", "group");
+      panels.forEach((panel, index) => {
+        panel.hidden = index !== 0;
+        panel.setAttribute("role", "group");
+        if (!panel.hasAttribute("aria-label")) {
+          panel.setAttribute("aria-label", panel.dataset.variant);
+        }
+      });
+      root.dataset.activeVariant = panels[0].dataset.variant;
+      if (panels.length === 1) {
+        continue;
+      }
+
+      const controls = document.createElement("div");
+      controls.className = "viz-carousel-controls";
+      // Portable copy of the settings dropdown's legacy glyph; no 14px icon-package preset matches it.
+      // https://github.com/openai/openai/blob/master/codex/codex-apps/webview/src/icons/chevron.svg
+      controls.innerHTML = `
+      <button type="button" class="viz-carousel-previous cursor-interaction"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
+      <details class="viz-carousel-picker">
+        <summary class="cursor-interaction">
+          <span class="viz-carousel-count tabular-nums"></span>
+          <span class="viz-carousel-name"></span>
+          <svg class="viz-carousel-caret" width="14" height="14" viewBox="0 0 20 21" fill="none" aria-hidden="true" focusable="false">
+            <path d="M15.2793 7.71101C15.539 7.45131 15.961 7.45131 16.2207 7.71101C16.4804 7.97071 16.4804 8.39272 16.2207 8.65242L10.4707 14.4024C10.211 14.6621 9.78902 14.6621 9.52932 14.4024L3.77932 8.65242L3.69436 8.54792C3.52385 8.28979 3.55205 7.93828 3.77932 7.71101C4.00659 7.48374 4.3581 7.45554 4.61623 7.62605L4.72073 7.71101L10 12.9903L15.2793 7.71101Z" fill="currentColor" stroke="currentColor" stroke-width="0.6" />
+          </svg>
+        </summary>
+        <div class="viz-carousel-options"></div>
+      </details>
+      <button type="button" class="viz-carousel-next cursor-interaction"><i data-lucide="chevron-right" aria-hidden="true"></i></button>`;
+      const previous = controls.querySelector(".viz-carousel-previous");
+      const next = controls.querySelector(".viz-carousel-next");
+      const picker = controls.querySelector(".viz-carousel-picker");
+      const summary = picker.querySelector("summary");
+      const count = controls.querySelector(".viz-carousel-count");
+      const name = controls.querySelector(".viz-carousel-name");
+      const options = controls.querySelector(".viz-carousel-options");
+      const status = document.createElement("span");
+      status.className = "sr-only";
+      status.setAttribute("role", "status");
+      status.setAttribute("aria-live", "polite");
+      status.setAttribute("aria-atomic", "true");
+      previous.setAttribute(
+        "aria-label",
+        root.dataset.previousLabel ?? "Previous variant",
+      );
+      next.setAttribute("aria-label", root.dataset.nextLabel ?? "Next variant");
+
+      let active = 0;
+      let mousePointerId = null;
+      let summaryPointerHandled = false;
+      summary.addEventListener("pointerdown", (event) => {
+        summaryPointerHandled =
+          event.pointerType === "mouse" && event.button === 0 && !event.ctrlKey;
+        if (!summaryPointerHandled) {
+          return;
+        }
+        event.preventDefault();
+        summary.focus({ preventScroll: true });
+        picker.open = !picker.open;
+        mousePointerId = picker.open ? event.pointerId : null;
+      });
+      summary.addEventListener("click", (event) => {
+        if (summaryPointerHandled && event.detail > 0) {
+          event.preventDefault();
+        }
+      });
+      const choices = panels.map((panel, index) => {
+        const choice = document.createElement("button");
+        choice.type = "button";
+        choice.className = "cursor-interaction";
+        choice.textContent = panel.dataset.variant;
+        choice.addEventListener("click", () => {
+          select(index);
+          summary.focus();
+        });
+        choice.addEventListener("pointerup", (event) => {
+          if (
+            picker.open &&
+            event.pointerType === "mouse" &&
+            event.button === 0 &&
+            event.pointerId === mousePointerId
+          ) {
+            choice.click();
+          }
+        });
+        options.appendChild(choice);
+        return choice;
+      });
+      const select = (index) => {
+        const changed = active !== index;
+        active = index;
+        panels.forEach((panel, position) => {
+          panel.hidden = position !== active;
+          choices[position].setAttribute(
+            "aria-current",
+            String(position === active),
+          );
+        });
+        root.dataset.activeVariant = panels[active].dataset.variant;
+        count.textContent = `${active + 1} / ${panels.length}`;
+        name.textContent = panels[active].dataset.variant;
+        picker.open = false;
+        mousePointerId = null;
+        if (changed) {
+          status.textContent = `${count.textContent}: ${name.textContent}`;
+        }
+      };
+      previous.addEventListener("click", () =>
+        select((active + panels.length - 1) % panels.length),
+      );
+      next.addEventListener("click", () =>
+        select((active + 1) % panels.length),
+      );
+      picker.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && picker.open) {
+          event.preventDefault();
+          picker.open = false;
+          mousePointerId = null;
+          summary.focus();
+          return;
+        }
+        if (event.altKey || event.ctrlKey || event.metaKey) {
+          return;
+        }
+        const index = choices.indexOf(document.activeElement);
+        let nextIndex;
+        if (event.key === "ArrowDown") {
+          nextIndex = index < 0 ? active : (index + 1) % choices.length;
+        } else if (event.key === "ArrowUp") {
+          nextIndex = index < 0 ? active : (index + choices.length - 1) % choices.length;
+        } else if (picker.open && event.key === "Home") {
+          nextIndex = 0;
+        } else if (picker.open && event.key === "End") {
+          nextIndex = choices.length - 1;
+        } else {
+          return;
+        }
+        event.preventDefault();
+        picker.open = true;
+        choices[nextIndex].focus();
+      });
+      picker.addEventListener("focusout", (event) => {
+        if (!picker.contains(event.relatedTarget)) {
+          picker.open = false;
+          mousePointerId = null;
+        }
+      });
+      const dismiss = (event) => {
+        if (!summary.contains(event.target)) {
+          mousePointerId = null;
+        }
+        if (!picker.contains(event.target)) {
+          picker.open = false;
+        }
+      };
+      const endPointerSelection = () => {
+        mousePointerId = null;
+      };
+      const sizePicker = () => {
+        root.style.setProperty(
+          "--viz-carousel-picker-height",
+          `${picker.open ? options.offsetHeight : 0}px`,
+        );
+      };
+      picker.addEventListener("toggle", sizePicker);
+      window.addEventListener("resize", sizePicker);
+      document.addEventListener("pointerdown", dismiss);
+      document.addEventListener("pointerup", endPointerSelection);
+      document.addEventListener("pointercancel", endPointerSelection);
+      window.addEventListener("blur", endPointerSelection);
+      window.addEventListener(
+        "pagehide",
+        () => {
+          document.removeEventListener("pointerdown", dismiss);
+          document.removeEventListener("pointerup", endPointerSelection);
+          document.removeEventListener("pointercancel", endPointerSelection);
+          window.removeEventListener("blur", endPointerSelection);
+          window.removeEventListener("resize", sizePicker);
+        },
+        { once: true },
+      );
+      root.append(controls, status);
+      select(0);
+    }
+  })();
+</script>
+
+<script>
+(() => {
+  const initialize = () => {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById("codex-visualization-lucide")
+    ?.addEventListener("load", initialize, { once: true });
+})();
+</script>
+
+</body>
+</html>
